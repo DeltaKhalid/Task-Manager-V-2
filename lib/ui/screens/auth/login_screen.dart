@@ -28,7 +28,7 @@ class _LoginScreenState extends State<LoginScreen> {
               children: [
                 const SizedBox(height: 150,),
               Text(
-                'Get Started With',
+                'Get Started With test 1',
                 // style: TextStyle(
                 //     fontSize: 24,
                 //     color: Colors.black,
