@@ -1,9 +1,12 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:task_managet/data/models/network_response.dart';
+import 'package:task_managet/data/services/network_caller.dart';
 import 'package:task_managet/ui/screens/auth/signup_screen.dart';
 import 'package:task_managet/ui/screens/bottom_nav_base_screen.dart';
 import 'package:task_managet/ui/screens/email_verification_screen.dart';
+import '../../../data/utils/urls.dart';
 import '../../utils/assets_utils.dart';
 import '../../widgets/screen_background.dart';
 
@@ -15,6 +18,38 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+
+  bool _loginInProgress = false;
+
+  final TextEditingController _emailTEController = TextEditingController();
+  final TextEditingController _passwordTEController = TextEditingController();
+
+  Future<void> login() async{
+    _loginInProgress = true;
+    if (mounted) {
+      setState(() {});
+    }
+    Map<String, dynamic> requestBody = {
+      "email": _emailTEController.text.trim(),
+      "password": _passwordTEController.text
+    };
+    final NetworkResponse response = await NetworkCaller().postRequest(Urls.login, requestBody);
+    _loginInProgress = false;
+    if (mounted) {
+      setState(() {});
+    }
+    /// Network call is End
+    if (response.isSuccess) {
+      if (mounted) {
+        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => BottomNavBaseScreen()), (route) => false);
+      }
+    }else {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Incorrect email or password')));
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,6 +73,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               const SizedBox(height: 16,),
               TextFormField(
+                controller: _emailTEController,
                 keyboardType: TextInputType.emailAddress,
                 decoration: const InputDecoration(
                   hintText: 'Email',
@@ -45,19 +81,25 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               const SizedBox(height: 12,),
               TextFormField(
+                controller: _passwordTEController,
                 obscureText: true,
                 decoration: const InputDecoration(
                   hintText: 'Password',
                 ),
               ),
               const SizedBox(height: 16,),
+              ///============================================ Login Button is Start ====================================///
               SizedBox(
                 width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => BottomNavBaseScreen()), (route) => false);
-                  },
-                  child: Icon(Icons.arrow_forward),
+                child: Visibility(
+                  visible: _loginInProgress == false,
+                  replacement: const Center(child: CircularProgressIndicator(),),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      login();
+                    },
+                    child: const Icon(Icons.arrow_forward),
+                  ),
                 ),
               ),
               const SizedBox(height: 24,),
@@ -71,7 +113,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     );
                   },
-                  child: Text(
+                  child: const Text(
                     'Forgot Password?',
                     style: TextStyle(color: Colors.grey),
                   ),
