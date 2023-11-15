@@ -34,7 +34,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   /// API Call
   Future<void> userSignUp() async {
-    _signUpInProgress = true;
+    _signUpInProgress = true;       /// For loder
     if (mounted) {
       setState(() {});
     }
