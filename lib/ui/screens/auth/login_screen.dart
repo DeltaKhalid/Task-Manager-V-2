@@ -1,6 +1,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:task_managet/data/models/auth_utility.dart';
+import 'package:task_managet/data/models/login_model.dart';
 import 'package:task_managet/data/models/network_response.dart';
 import 'package:task_managet/data/services/network_caller.dart';
 import 'package:task_managet/ui/screens/auth/signup_screen.dart';
@@ -40,6 +42,13 @@ class _LoginScreenState extends State<LoginScreen> {
     }
     /// Network call is End
     if (response.isSuccess) {
+
+      // Login info check method
+      LoginModel model = LoginModel.fromJson(response.body!);     /// ! -> used for forsed not null
+      print(model.data?.mobile);
+      await AuthUtility.saveUserInfo(model);
+
+
       if (mounted) {
         Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => BottomNavBaseScreen()), (route) => false);
       }

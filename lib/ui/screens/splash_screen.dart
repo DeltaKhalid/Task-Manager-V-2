@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:task_managet/data/models/auth_utility.dart';
 import 'package:task_managet/ui/screens/auth/login_screen.dart';
+import 'package:task_managet/ui/screens/bottom_nav_base_screen.dart';
 import 'package:task_managet/ui/utils/assets_utils.dart';
 import 'package:task_managet/ui/widgets/screen_background.dart';
 
@@ -21,9 +23,18 @@ class _SplashScrenState extends State<SplashScren> {
   }
 
   /// this is the best way, this one kind of "Completer"
-  void navigateToLogin() {
-    Future.delayed(Duration(seconds: 5)).then((_){
-      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginScreen()), (route) => false);
+  Future<void> navigateToLogin() async {
+
+
+
+    Future.delayed(Duration(seconds: 5)).then((_) async {
+      final bool isLoggedIn = await AuthUtility.checkIfUserLoggedIn();
+      if (mounted) {
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => isLoggedIn ? const BottomNavBaseScreen() : const LoginScreen()),
+                (route) => false);
+      }
     });
   }
 
