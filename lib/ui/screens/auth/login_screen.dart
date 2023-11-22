@@ -45,7 +45,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
       // Login info check method
       LoginModel model = LoginModel.fromJson(response.body!);     /// ! -> used for forsed not null
-      print(model.data?.mobile);
+      print('First Name : ${model.data?.firstName}');
+      print('First Name : ${AuthUtility.userInfo.data?.firstName}');
       await AuthUtility.saveUserInfo(model);
 
 
