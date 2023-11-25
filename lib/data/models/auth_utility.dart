@@ -15,7 +15,7 @@ class AuthUtility {
     await _shairedPrefs.setString('user-data', jsonEncode(model.toJson()));
   }
 
-  static Future<LoginModel> getUserInfo(LoginModel model) async{
+  static Future<LoginModel> getUserInfo() async{
     SharedPreferences _shairedPrefs = await SharedPreferences.getInstance();
     String value  = _shairedPrefs.getString('user-data')!;
     //LoginModel model = LoginModel.fromJson(jsonDecode(value));
@@ -32,14 +32,15 @@ class AuthUtility {
   //   SharedPreferences _shairedPrefs = await SharedPreferences.getInstance();
   //   return await _shairedPrefs.containsKey('user-data');
   // }
-
+  /// new code of checkIfUserLoggedIn
   static Future<bool> checkIfUserLoggedIn() async{
     SharedPreferences _shairedPrefs = await SharedPreferences.getInstance();
-    bool isLongin = _shairedPrefs.containsKey('user-data');
-    if (isLongin) {
-      userInfo = await getUserInfo(userInfo);
+    //return await _shairedPrefs.containsKey('user-data');
+    bool isLogin = _shairedPrefs.containsKey('user-data');
+    if (isLogin) {
+      userInfo = await getUserInfo();
     }
-    return isLongin;
+    return isLogin;
   }
 
 

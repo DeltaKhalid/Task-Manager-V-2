@@ -25,6 +25,7 @@ class _SplashScrenState extends State<SplashScren> {
   /// this is the best way, this one kind of "Completer"
   Future<void> navigateToLogin() async {
 
+
     Future.delayed(Duration(seconds: 5)).then((_) async {
       final bool isLoggedIn = await AuthUtility.checkIfUserLoggedIn();
       if (mounted) {

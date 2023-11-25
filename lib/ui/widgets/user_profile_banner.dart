@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:task_managet/data/models/auth_utility.dart';
 
-class UserProfileBanner extends StatelessWidget {
+class UserProfileBanner extends StatefulWidget {
   const UserProfileBanner({
     super.key,
   });
 
+  @override
+  State<UserProfileBanner> createState() => _UserProfileBannerState();
+}
 
+class _UserProfileBannerState extends State<UserProfileBanner> {
   @override
   Widget build(BuildContext context) {
     return ListTile(
@@ -17,12 +21,18 @@ class UserProfileBanner extends StatelessWidget {
         radius: 15,
       ),
       title: Text(
-        '${AuthUtility.userInfo.data?.firstName}' + ' ' + '${AuthUtility.userInfo.data?.lastName}',
+        //'${AuthUtility.userInfo.data?.firstName}' + ' ' + '${AuthUtility.userInfo.data?.lastName}',
+          //(AuthUtility.userInfo.data?.firstName ?? '') +
+        //'${AuthUtility.userInfo.data?.firstName ?? ''}',
+        //'${AuthUtility.userInfo.data?.email}',
+        //'${}',
+          '${AuthUtility.userInfo.data?.firstName}',
         style: TextStyle(
             fontSize: 16, color: Colors.white, fontWeight: FontWeight.w500),
       ),
       subtitle: Text(
-        '${AuthUtility.userInfo.data?.email}',
+        '${AuthUtility.userInfo.data?.lastName}',
+        //'${AuthUtility.userInfo.data?.firstName}',
         style: TextStyle(fontSize: 15, color: Colors.white),
       ),
     );
