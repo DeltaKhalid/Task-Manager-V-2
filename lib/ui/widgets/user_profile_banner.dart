@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:task_managet/data/models/auth_utility.dart';
+import 'package:task_managet/ui/screens/auth/login_screen.dart';
 
 class UserProfileBanner extends StatefulWidget {
   const UserProfileBanner({
@@ -21,19 +22,26 @@ class _UserProfileBannerState extends State<UserProfileBanner> {
         radius: 15,
       ),
       title: Text(
-        //'${AuthUtility.userInfo.data?.firstName}' + ' ' + '${AuthUtility.userInfo.data?.lastName}',
-          //(AuthUtility.userInfo.data?.firstName ?? '') +
-        //'${AuthUtility.userInfo.data?.firstName ?? ''}',
-        //'${AuthUtility.userInfo.data?.email}',
-        //'${}',
           '${AuthUtility.userInfo.data?.firstName}',
         style: TextStyle(
             fontSize: 16, color: Colors.white, fontWeight: FontWeight.w500),
       ),
       subtitle: Text(
-        '${AuthUtility.userInfo.data?.lastName}',
+        '${AuthUtility.userInfo.data?.email}',
         //'${AuthUtility.userInfo.data?.firstName}',
         style: TextStyle(fontSize: 15, color: Colors.white),
+      ),
+      trailing: IconButton(
+        onPressed: () async {
+          await AuthUtility.clearUserInfo();
+          if (mounted) {
+            Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => LoginScreen()),
+                (route) => false);
+          }
+        },
+        icon: Icon(Icons.logout),
       ),
     );
   }

@@ -13,6 +13,7 @@ class AuthUtility {
     //_shairedPrefs.setDouble('user-data', model.toJson().toString() as double);
     //await _shairedPrefs.setString('user-data', model.toJson().toString());
     await _shairedPrefs.setString('user-data', jsonEncode(model.toJson()));
+    userInfo = model;
   }
 
   static Future<LoginModel> getUserInfo() async{
