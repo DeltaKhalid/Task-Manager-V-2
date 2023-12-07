@@ -26,16 +26,16 @@ class _SplashScrenState extends State<SplashScren> {
   Future<void> navigateToLogin() async {
 
 
-
     Future.delayed(Duration(seconds: 5)).then((_) async {
       final bool isLoggedIn = await AuthUtility.checkIfUserLoggedIn();
       if (mounted) {
         Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(builder: (context) => isLoggedIn ? const BottomNavBaseScreen() : const LoginScreen()),
+            MaterialPageRoute(builder: (context) => isLoggedIn ? const BottomNavBaseScreen() : const LoginScreen()),  /// Tarnary operator for login or home screen
                 (route) => false);
       }
     });
+
   }
 
   /// anather way for Delay method

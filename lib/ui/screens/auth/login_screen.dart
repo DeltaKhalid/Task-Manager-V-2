@@ -36,6 +36,7 @@ class _LoginScreenState extends State<LoginScreen> {
       "password": _passwordTEController.text
     };
     final NetworkResponse response = await NetworkCaller().postRequest(Urls.login, requestBody);
+    print('Response Body 999 : ${response.body}');
     _loginInProgress = false;
     if (mounted) {
       setState(() {});
@@ -45,7 +46,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
       // Login info check method
       LoginModel model = LoginModel.fromJson(response.body!);     /// ! -> used for forsed not null
-      print(model.data?.mobile);
+      print('First Name : ${model.data?.firstName}');
+      print('First lastName : ${model.data?.lastName}');
+      print('First emal : ${model.data?.email}');
+      print('First mobile : ${model.data?.mobile}');
       await AuthUtility.saveUserInfo(model);
 
 
