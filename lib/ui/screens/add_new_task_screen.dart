@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:task_managet/data/models/network_response.dart';
+import 'package:task_managet/data/services/network_caller.dart';
 import 'package:task_managet/ui/widgets/user_profile_banner.dart';
+
+import '../../data/utils/urls.dart';
 
 class AddNewTaskScreen extends StatefulWidget {
   const AddNewTaskScreen({super.key});
@@ -9,6 +13,48 @@ class AddNewTaskScreen extends StatefulWidget {
 }
 
 class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
+  
+
+
+  ///======================================== Add new Task API Call Start ========================================///
+  final TextEditingController _titleTEController = TextEditingController();
+  final TextEditingController _descriptionTEController = TextEditingController();
+
+  bool _addNewTaskInProgress = false;
+
+  Future<void> addNewTask() async{
+    _addNewTaskInProgress = true;
+    if (mounted) {
+      setState(() {});
+    }
+    Map<String, dynamic> responseBody = {
+      "title": _titleTEController.text.trim(),
+      "description": _descriptionTEController.text.trim(),
+      "status":"New"
+    };
+
+    final NetworkResponse response = await NetworkCaller().postRequest(Urls.createTask, responseBody);
+
+    _addNewTaskInProgress = false;
+    if (mounted) {
+      setState(() {});
+    }
+
+    if (response.isSuccess) {
+      _titleTEController.clear();
+      _descriptionTEController.clear();
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Task Added Successfullly!"),),);
+      }
+    }else {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Task Add failed!"),),);
+      }
+    }
+    
+  }
+  ///======================================== Add new Task API Call End ========================================///
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,6 +75,7 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
                   ),
                   const SizedBox(height: 16,),
                   TextFormField(
+                    controller: _titleTEController,
                     decoration: InputDecoration(
                         hintText: 'Title'
                     ),
@@ -36,6 +83,7 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
                   const SizedBox(height: 8,),
                   TextFormField(
                     maxLines: 4,
+                    controller: _descriptionTEController,
                     decoration: InputDecoration(
                         hintText: 'Description'
                     ),
@@ -43,11 +91,16 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
                   const SizedBox(height: 16,),
                   SizedBox(
                     width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        //Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => BottomNavBaseScreen()), (route) => false);
-                      },
-                      child: Icon(Icons.arrow_forward),
+                    child: Visibility(
+                      visible: _addNewTaskInProgress == false,
+                      replacement: const Center(child: CircularProgressIndicator(),),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          addNewTask();
+                          //Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => BottomNavBaseScreen()), (route) => false);
+                        },
+                        child: Icon(Icons.arrow_forward),
+                      ),
                     ),
                   ),
                 ],
