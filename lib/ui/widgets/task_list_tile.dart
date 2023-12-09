@@ -3,10 +3,10 @@ import '../../data/models/task_list_mode.dart';
 
 class TaskListTile extends StatelessWidget {
 
-  //final TaskData data;
+  final TaskData data;
 
   const TaskListTile({
-    super.key,
+    super.key, required this.data,
   });
 
 
@@ -14,17 +14,17 @@ class TaskListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text("Title"),
+      title: Text(data.title ?? 'UnKnown'),
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("Discription"),
-          Text('Created Date'),
+          Text(data.description ?? ''),
+          Text(data.createdDate ?? ''),
           Row(
             children: [
               Chip(
                 label: Text(
-                  'New',
+                  data.status ?? 'New',
                   style: TextStyle(color: Colors.white),
                 ),
                 backgroundColor: Colors.blue,

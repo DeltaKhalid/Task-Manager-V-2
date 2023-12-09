@@ -1,6 +1,4 @@
-
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:task_managet/data/models/auth_utility.dart';
 import 'package:task_managet/data/models/login_model.dart';
 import 'package:task_managet/data/models/network_response.dart';
@@ -9,7 +7,6 @@ import 'package:task_managet/ui/screens/auth/signup_screen.dart';
 import 'package:task_managet/ui/screens/bottom_nav_base_screen.dart';
 import 'package:task_managet/ui/screens/email_verification_screen.dart';
 import '../../../data/utils/urls.dart';
-import '../../utils/assets_utils.dart';
 import '../../widgets/screen_background.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -21,11 +18,14 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
 
+  ///======================================== All Variables ============================================================///
   bool _loginInProgress = false;
 
+  ///---------------------------------------- Text Editing Controller for taking username and pass --------------------///
   final TextEditingController _emailTEController = TextEditingController();
   final TextEditingController _passwordTEController = TextEditingController();
 
+  ///---------------------------------------- Login API call Function ------------------------------------------------///
   Future<void> login() async{
     _loginInProgress = true;
     if (mounted) {
@@ -35,34 +35,33 @@ class _LoginScreenState extends State<LoginScreen> {
       "email": _emailTEController.text.trim(),
       "password": _passwordTEController.text
     };
-    final NetworkResponse response = await NetworkCaller().postRequest(Urls.login, requestBody);
+    final NetworkResponse response = await NetworkCaller().postRequest(Urls.login, requestBody, isLognin: true);
     print('Response Body 999 : ${response.body}');
     _loginInProgress = false;
     if (mounted) {
       setState(() {});
     }
-    /// Network call is End
+    // Network call is End
     if (response.isSuccess) {
-
-      // Login info check method
-      LoginModel model = LoginModel.fromJson(response.body!);     /// ! -> used for forsed not null
+      // Login info check
+      LoginModel model = LoginModel.fromJson(response.body!);     /// ! -> used for forced not null
       print('First Name : ${model.data?.firstName}');
       print('First lastName : ${model.data?.lastName}');
       print('First emal : ${model.data?.email}');
       print('First mobile : ${model.data?.mobile}');
       await AuthUtility.saveUserInfo(model);
 
-
       if (mounted) {
         Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => BottomNavBaseScreen()), (route) => false);
       }
     }else {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Incorrect email or password')));
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Incorrect email or Password')));
       }
     }
   }
 
+  ///======================================== Scaffold Start ========================================================///
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -101,7 +100,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
               const SizedBox(height: 16,),
-              ///============================================ Login Button is Start ====================================///
+              ///----------------------------- Login Button is Start ---------------------------------------------///
               SizedBox(
                 width: double.infinity,
                 child: Visibility(

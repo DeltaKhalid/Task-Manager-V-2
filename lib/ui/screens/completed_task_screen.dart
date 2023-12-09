@@ -22,7 +22,10 @@ class _CompletedTaskScreenState extends State<CompletedTaskScreen> {
                 child: ListView.separated(
                   itemCount: 20,
                   itemBuilder: (context, index){
-                    return TaskListTile();
+                    //return TaskListTile();
+                    return Scaffold(
+                      body: Text('Complete Task Screen'),
+                    );
                   }, separatorBuilder: (BuildContext context, int index) {
                   return const Divider(height: 4,);
                 },),

@@ -4,8 +4,6 @@ import 'package:task_managet/data/models/summary_count_model.dart';
 import 'package:task_managet/data/models/task_list_mode.dart';
 import 'package:task_managet/data/services/network_caller.dart';
 import 'package:task_managet/ui/screens/add_new_task_screen.dart';
-import 'package:task_managet/ui/utils/assets_utils.dart';
-
 import '../../data/utils/urls.dart';
 import '../widgets/summary_card.dart';
 import '../widgets/task_list_tile.dart';
@@ -21,12 +19,12 @@ class NewTaskScreen extends StatefulWidget {
 
 class _NewTaskScreenState extends State<NewTaskScreen> {
 
-  ///======================================== All Variables ==================================================///
+  ///======================================== All Variables =============================================================///
   bool _getCountSummaryInProgress = false;
   bool _getNewTaskInProgress = false;
 
 
-  ///======================================== Init State Call ================================================///
+  ///======================================== Init State Call ==========================================================///
   @override
   void initState() {
     // TODO: implement initState
@@ -38,8 +36,7 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
     });
   }
 
-
-  ///======================================== getCountSummary Function (Task Status Count) API Call =========///
+  ///---------------------------------------- getCountSummary Function (Task Status Count) API Call --------------------///
   SummaryCountModel _summaryCountModel = SummaryCountModel();
   /// API call start
   Future<void> getCountSummary() async{
@@ -62,7 +59,7 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
 
   }
 
-  ///======================================== getNewTask() Function (/listTaskByStatus/New) API Call ========///
+  ///---------------------------------------- getNewTask() Function (/listTaskByStatus/New) API Call -----------------------///
   TaskListModel _taskListModel = TaskListModel();
   Future<void> getNewTasks() async {
     _getNewTaskInProgress = true;
@@ -84,98 +81,89 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
     }
   }
 
-
+  ///================================================== Scaffold Part ========================================================///
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
         child: Column(
           children: [
+            ///---------------------------------------- user profile banner ----------------------------------------------------///
             const UserProfileBanner(),
-            Padding(
-              padding: EdgeInsets.all(8.0),
-              child: _getCountSummaryInProgress ? LinearProgressIndicator() : Row(
-                children: [
-                  Expanded(
-                    child: SummaryCard(
-                      title: 'New',
-                      number: 123,
-                    ),
-                  ),
-                  Expanded(
-                    child: SummaryCard(
-                      title: 'Progress',
-                      number: 123,
-                    ),
-                  ),
-                  Expanded(
-                    child: SummaryCard(
-                      title: 'Cancel',
-                      number: 123,
-                    ),
-                  ),
-                  Expanded(
-                    child: SummaryCard(
-                      title: 'Complete',
-                      number: 123,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Expanded(
 
-
-              child: ListView.separated(
-                itemCount: _taskListModel.data?.length ?? 0,
-                  itemBuilder: (context, index){
-                    return ListTile(
-                      title: Text(_taskListModel.data![index].title ?? 'Unknown'),
-                      subtitle: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(_taskListModel.data![index].description ?? ''),
-                          Text(_taskListModel.data![index].createdDate ?? ''),
-                          Row(
-                            children: [
-                              Chip(label: Text('New', style: TextStyle(color: Colors.white),), backgroundColor: Colors.blue,),
-                              Spacer(),
-                              IconButton(onPressed: (){}, icon: Icon(Icons.delete_forever_outlined), color: Colors.red.shade300,),
-                              IconButton(onPressed: (){}, icon: Icon(Icons.edit), color: Colors.greenAccent,),
-                            ],
-                          )
-                        ],
-                      ),
+            ///---------------------------------------- Task Summary Show -----------------------------------------------------///
+            _getCountSummaryInProgress
+                ? Center(
+              child: LinearProgressIndicator(),
+            )
+                : Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: SizedBox(
+                                height: 70,
+                    width: double.infinity,
+                    child: ListView.separated(
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: _summaryCountModel.data?.length ?? 0,
+                                  itemBuilder: (context, index){
+                    return SummaryCard(
+                      title: _summaryCountModel.data![index].sId ?? 'New',
+                      number: _summaryCountModel.data![index].sum ?? 0,
                     );
+                                  }, separatorBuilder: (BuildContext context, int index) {
+                                  return Divider(height: 4,);
+                                 },
+                                ),
+                  ),
+                ),
 
+            ///---------------------------------------- New Task Show ListView.builder ----------------------------------------///
+            Expanded(
+              child: RefreshIndicator(
+                onRefresh: () async {
+                  getNewTasks();
+                  getCountSummary();
+                },
+                child: _getNewTaskInProgress
+                    ? Center(
+                        child: CircularProgressIndicator(),
+                      )
+                    : ListView.separated(
+                        itemCount: _taskListModel.data?.length ?? 0,
+                    itemBuilder: (context, index){
+                          return TaskListTile(
+                              data: _taskListModel.data![index],
+                          );
 
-                    // return ListTile(
-                    //   title: Text('${_taskListModel.data?[index].title}'),
-                    //   // Add additional widgets or customize ListTile as needed
-                    //   // For example, you can add onTap to handle item taps.
-                    //   // onTap: () {
-                    //   //   print('Tapped on ${items[index]}');
-                    //   // },
-                    // );
+                      // return ListTile(
+                      //   title: Text(_taskListModel.data![index].title ?? 'Unknown'),
+                      //   subtitle: Column(
+                      //     crossAxisAlignment: CrossAxisAlignment.start,
+                      //     children: [
+                      //       Text(_taskListModel.data![index].description ?? ''),
+                      //       Text(_taskListModel.data![index].createdDate ?? ''),
+                      //       Row(
+                      //         children: [
+                      //         Chip(
+                      //           label: Text(
+                      //             _taskListModel.data?[index].status ?? 'New',
+                      //             style: TextStyle(color: Colors.white),
+                      //           ),
+                      //           backgroundColor: Colors.blue,
+                      //         ),
+                      //         Spacer(),
+                      //           IconButton(onPressed: (){}, icon: Icon(Icons.delete_forever_outlined), color: Colors.red.shade300,),
+                      //           IconButton(onPressed: (){}, icon: Icon(Icons.edit), color: Colors.greenAccent,),
+                      //         ],
+                      //       )
+                      //     ],
+                      //   ),
+                      // );
 
+                    }, separatorBuilder: (BuildContext context, int index) {
+                    return Divider(height: 4,);
+                },),
+              ),
 
-
-                  }, separatorBuilder: (BuildContext context, int index) {
-                  return Divider(height: 4,);
-              },),
-              
-              
-              // child: ListView.separated(
-              //   itemCount: _taskListModel.data?.length ?? 0,                                                ///*** very important "by default 0" that why
-              //     itemBuilder: (context, index){
-              //       return TaskListTile(
-              //         data: _taskListModel.data![index],
-              //       );
-              //     }, separatorBuilder: (BuildContext context, int index) {
-              //      return const Divider(height: 4,);
-              // },),
-              
-              
             )
           ],
         ),

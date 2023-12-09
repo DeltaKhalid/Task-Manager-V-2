@@ -22,7 +22,10 @@ class _CancelledTaskScreenState extends State<CancelledTaskScreen> {
                 child: ListView.separated(
                   itemCount: 20,
                   itemBuilder: (context, index){
-                    return TaskListTile();
+                    return Scaffold(
+                      body: Text('Complete Task Screen'),
+                    );
+                    //return TaskListTile();
                   }, separatorBuilder: (BuildContext context, int index) {
                   return const Divider(height: 4,);
                 },),
