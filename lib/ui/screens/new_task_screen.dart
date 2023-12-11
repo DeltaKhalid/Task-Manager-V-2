@@ -19,12 +19,12 @@ class NewTaskScreen extends StatefulWidget {
 
 class _NewTaskScreenState extends State<NewTaskScreen> {
 
-  ///======================================== All Variables =============================================================///
+  ///======================================== All Variables ===================================================================///
   bool _getCountSummaryInProgress = false;
   bool _getNewTaskInProgress = false;
 
 
-  ///======================================== Init State Call ==========================================================///
+  ///======================================== Init State Call =================================================================///
   @override
   void initState() {
     // TODO: implement initState
@@ -36,7 +36,7 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
     });
   }
 
-  ///---------------------------------------- getCountSummary Function (Task Status Count) API Call --------------------///
+  ///---------------------------------------- getCountSummary Function (Task Status Count) API Call ---------------------------///
   SummaryCountModel _summaryCountModel = SummaryCountModel();
   /// API call start
   Future<void> getCountSummary() async{
@@ -59,7 +59,7 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
 
   }
 
-  ///---------------------------------------- getNewTask() Function (/listTaskByStatus/New) API Call -----------------------///
+  ///---------------------------------------- getNewTask() Function (/listTaskByStatus/New) API Call --------------------------///
   TaskListModel _taskListModel = TaskListModel();
   Future<void> getNewTasks() async {
     _getNewTaskInProgress = true;
@@ -81,6 +81,28 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
     }
   }
 
+  ///---------------------------------------- deleteTask() Function (url/deleteTask/id) API Call ------------------------------///
+  Future<void> deleteTask(String taskId) async{
+    final NetworkResponse response = await NetworkCaller().getRequest(Urls.deleteTask(taskId));
+    if (response.isSuccess) {
+      //getNewTasks();
+      _taskListModel.data!.removeWhere((element) => element.sId == taskId);     // task list model is the main data list of Task Screen
+      if (mounted) {
+        setState(() {});
+      }
+    }else {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Deletion of task has been failed!'),
+          ),
+        );
+      }
+    }
+  }
+
+  ///---------------------------------------- updateTask() Function () API Call ------------------------------///
+
   ///================================================== Scaffold Part ========================================================///
   @override
   Widget build(BuildContext context) {
@@ -88,10 +110,10 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            ///---------------------------------------- user profile banner ----------------------------------------------------///
+            ///---------------------------------------- user profile banner --------------------------------------------------///
             const UserProfileBanner(),
 
-            ///---------------------------------------- Task Summary Show -----------------------------------------------------///
+            ///---------------------------------------- Task Summary Show ListView.builder -----------------------------------///
             _getCountSummaryInProgress
                 ? Center(
               child: LinearProgressIndicator(),
@@ -130,34 +152,51 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
                     : ListView.separated(
                         itemCount: _taskListModel.data?.length ?? 0,
                     itemBuilder: (context, index){
-                          return TaskListTile(
-                              data: _taskListModel.data![index],
-                          );
 
-                      // return ListTile(
-                      //   title: Text(_taskListModel.data![index].title ?? 'Unknown'),
-                      //   subtitle: Column(
-                      //     crossAxisAlignment: CrossAxisAlignment.start,
-                      //     children: [
-                      //       Text(_taskListModel.data![index].description ?? ''),
-                      //       Text(_taskListModel.data![index].createdDate ?? ''),
-                      //       Row(
-                      //         children: [
-                      //         Chip(
-                      //           label: Text(
-                      //             _taskListModel.data?[index].status ?? 'New',
-                      //             style: TextStyle(color: Colors.white),
-                      //           ),
-                      //           backgroundColor: Colors.blue,
-                      //         ),
-                      //         Spacer(),
-                      //           IconButton(onPressed: (){}, icon: Icon(Icons.delete_forever_outlined), color: Colors.red.shade300,),
-                      //           IconButton(onPressed: (){}, icon: Icon(Icons.edit), color: Colors.greenAccent,),
-                      //         ],
-                      //       )
-                      //     ],
-                      //   ),
-                      // );
+                          // return TaskListTile(
+                          //     data: _taskListModel.data![index],
+                          //   onDeleteTap: () {
+                          //       deleteTask(_taskListModel.data![index].sId!);
+                          //   },
+                          //   onEditTap: () {  },
+                          // );
+
+                      return ListTile(
+                        title: Text(_taskListModel.data![index].title ?? 'Unknown'),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(_taskListModel.data![index].description ?? ''),
+                            Text(_taskListModel.data![index].createdDate ?? ''),
+                            Row(
+                              children: [
+                              Chip(
+                                label: Text(
+                                  _taskListModel.data?[index].status ?? 'New',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                                backgroundColor: Colors.blue,
+                              ),
+                              Spacer(),
+                                    IconButton(
+                                      onPressed: () {
+                                        deleteTask(deleteTask(_taskListModel.data![index].sId!) as String);
+                                      },
+                                      icon: Icon(Icons.delete_forever_outlined),
+                                      color: Colors.red.shade300,
+                                    ),
+                                    IconButton(
+                                      onPressed: () {
+                                        showEditBottomSheet(_taskListModel.data![index]);
+                                      },
+                                      icon: Icon(Icons.edit),
+                                      color: Colors.greenAccent,
+                                    ),
+                                  ],
+                            )
+                          ],
+                        ),
+                      );
 
                     }, separatorBuilder: (BuildContext context, int index) {
                     return Divider(height: 4,);
@@ -176,6 +215,110 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
       ),
     );
   }
+
+  ///---------------------------------------- BottomSheet for Edit Task Option --------------------------------------------------///
+  void showEditBottomSheet(TaskData task) {
+    final TextEditingController _titleTEController = TextEditingController(text: task.title);
+    final TextEditingController _descriptionTEController = TextEditingController(text: task.description);
+    bool _updateTaskInProgress = false;
+
+    ///======================================== UpdateTask API Call ==== ========================================///
+
+    Future<void> updateTask() async{
+      _updateTaskInProgress = true;
+      if (mounted) {
+        setState(() {});
+      }
+      Map<String, dynamic> responseBody = {
+        "title": _titleTEController.text.trim(),
+        "description": _descriptionTEController.text.trim(),
+        //"status":"New"
+      };
+
+      final NetworkResponse response = await NetworkCaller().postRequest(Urls.createTask, responseBody);
+
+      _updateTaskInProgress = false;
+      if (mounted) {
+        setState(() {});
+      }
+
+      if (response.isSuccess) {
+        _titleTEController.clear();
+        _descriptionTEController.clear();
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Task UpDated Successfullly!"),),);
+        }
+      }else {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Task UpDate failed!"),),);
+        }
+      }
+
+    }
+
+    showModalBottomSheet(
+        isScrollControlled: true,                                       ///*** should be true
+        context: context, builder: (context){
+      return Padding(                                                   ///*** SingleChildScroolView will be covered with "Padding"
+        padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),   ///*** padding will be take from "MediaQuery"
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Text(
+                      'Update Task',
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
+                    Spacer(),
+                        IconButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          icon: Icon(Icons.close),
+                        ),
+                      ],
+                ),
+                const SizedBox(height: 16,),
+                TextFormField(
+                  controller: _titleTEController,
+                  decoration: const InputDecoration(
+                      hintText: 'Title'
+                  ),
+                ),
+                const SizedBox(height: 8,),
+                TextFormField(
+                  maxLines: 4,
+                  controller: _descriptionTEController,
+                  decoration: const InputDecoration(
+                      hintText: 'Description'
+                  ),
+                ),
+                const SizedBox(height: 16,),
+                SizedBox(
+                  width: double.infinity,
+                  child: Visibility(
+                    visible: _updateTaskInProgress == false,
+                    replacement: const Center(child: CircularProgressIndicator(),),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        updateTask();
+                      },
+                      child: const Text('UpDate'),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    });
+  }
+
 }
 
 

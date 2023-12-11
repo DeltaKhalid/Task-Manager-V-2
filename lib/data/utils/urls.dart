@@ -8,6 +8,7 @@ class Urls {
   static String taskStatusCount = '$_baseurl/taskStatusCount';
   static String newTask = '$_baseurl/listTaskByStatus/New';
   static String inProgressTask = '$_baseurl/listTaskByStatus/Progress';
+  static String deleteTask(String id) => '$_baseurl/deleteTask/$id';               /// ID will be change that's why
 
 // static const String _baseurl = 'http://192.168.1.189/api/v1/account';
 // static String login = '$_baseurl/login';

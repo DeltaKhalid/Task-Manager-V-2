@@ -21,11 +21,11 @@ class _LoginScreenState extends State<LoginScreen> {
   ///======================================== All Variables ============================================================///
   bool _loginInProgress = false;
 
-  ///---------------------------------------- Text Editing Controller for taking username and pass --------------------///
+  ///---------------------------------------- Text Editing Controller for taking username and pass ---------------------///
   final TextEditingController _emailTEController = TextEditingController();
   final TextEditingController _passwordTEController = TextEditingController();
 
-  ///---------------------------------------- Login API call Function ------------------------------------------------///
+  ///---------------------------------------- Login API call Function -------------------------------------------------///
   Future<void> login() async{
     _loginInProgress = true;
     if (mounted) {
@@ -44,7 +44,7 @@ class _LoginScreenState extends State<LoginScreen> {
     // Network call is End
     if (response.isSuccess) {
       // Login info check
-      LoginModel model = LoginModel.fromJson(response.body!);     /// ! -> used for forced not null
+      LoginModel model = LoginModel.fromJson(response.body!);     // ! -> used for forced not null
       print('First Name : ${model.data?.firstName}');
       print('First lastName : ${model.data?.lastName}');
       print('First emal : ${model.data?.email}');

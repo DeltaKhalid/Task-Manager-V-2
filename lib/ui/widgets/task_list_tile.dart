@@ -1,37 +1,64 @@
 import 'package:flutter/material.dart';
+import 'package:task_managet/ui/screens/new_task_screen.dart';
 import '../../data/models/task_list_mode.dart';
 
-class TaskListTile extends StatelessWidget {
+class TaskListTile extends StatefulWidget {
+
+  final VoidCallback onDeleteTap, onEditTap;
+
+  //final VoidCallbackAction onDeleteTap, onEditTap;
+
+  const TaskListTile({
+    super.key,
+    required this.data,
+    required this.onDeleteTap,
+    required this.onEditTap,
+  });
 
   final TaskData data;
 
-  const TaskListTile({
-    super.key, required this.data,
-  });
+  @override
+  State<TaskListTile> createState() => _TaskListTileState();
+}
+
+class _TaskListTileState extends State<TaskListTile> {
+
 
 
 
   @override
   Widget build(BuildContext context) {
+
+    final NewTaskScreen newTaskScreen = NewTaskScreen();
+
     return ListTile(
-      title: Text(data.title ?? 'UnKnown'),
+      title: Text(widget.data.title ?? 'UnKnown'),
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(data.description ?? ''),
-          Text(data.createdDate ?? ''),
+          Text(widget.data.description ?? ''),
+          Text(widget.data.createdDate ?? ''),
           Row(
             children: [
               Chip(
                 label: Text(
-                  data.status ?? 'New',
-                  style: TextStyle(color: Colors.white),
+                  widget.data.status ?? 'New',
+                  style: const TextStyle(color: Colors.white),
                 ),
                 backgroundColor: Colors.blue,
               ),
               Spacer(),
-              IconButton(onPressed: (){}, icon: Icon(Icons.delete_forever_outlined), color: Colors.red.shade300,),
-              IconButton(onPressed: (){}, icon: Icon(Icons.edit), color: Colors.greenAccent,),
+              IconButton(
+                onPressed: () {},
+                //onPressed: ,
+                icon: const Icon(Icons.delete_forever_outlined),
+                color: Colors.red.shade300,
+              ),
+              IconButton(
+                onPressed: () {},
+                icon: const Icon(Icons.edit),
+                color: Colors.greenAccent,
+              ),
             ],
           )
         ],

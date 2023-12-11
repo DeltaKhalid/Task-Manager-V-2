@@ -22,7 +22,11 @@ class NetworkCaller {
         //decodedResponse = jsonDecode(response.body);
         //final decodedResponse = jsonDecode(response.body);
         return NetworkResponse(true, response.statusCode, jsonDecode(response.body));
-      } else {
+      }
+      else if (response.statusCode == 401){
+        gotoLogin();
+      }
+      else {
         //todo - handle other response code - 401,400, 500
         return NetworkResponse(false, response.statusCode, null);
       }

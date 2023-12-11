@@ -65,10 +65,12 @@ class _InProgressTaskScreenState extends State<InProgressTaskScreen> {
                 child: ListView.separated(
                   itemCount: _taskListModel.data?.length ?? 0,
                   itemBuilder: (context, index){
-                    return TaskListTile(
-                      data: _taskListModel.data![index],
-                    );
-                  }, separatorBuilder: (BuildContext context, int index) {
+                return TaskListTile(
+                  data: _taskListModel.data![index],
+                  onDeleteTap: () {},
+                  onEditTap: () {},
+                );
+              }, separatorBuilder: (BuildContext context, int index) {
                   return const Divider(height: 4,);
                 },),
               )
