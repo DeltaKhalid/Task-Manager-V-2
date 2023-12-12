@@ -101,6 +101,27 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
     }
   }
 
+  ///---------------------------------------- updateTask() Function (url/updateTaskStatus/$id/$status) API Call ---------------///
+  Future<void> updateTask(String taskId, String newStatus) async{
+    final NetworkResponse response = await NetworkCaller().getRequest(Urls.updateTask(taskId, newStatus));
+    if (response.isSuccess) {
+      //getNewTasks();
+      //_taskListModel.data!.removeWhere((element) => element.sId == taskId);     // task list model is the main data list of Task Screen
+      Navigator.pop(context);
+      if (mounted) {
+        setState(() {});
+      }
+    }else {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Update task has been failed!'),
+          ),
+        );
+      }
+    }
+  }
+
   ///---------------------------------------- updateTask() Function () API Call ------------------------------///
 
   ///================================================== Scaffold Part ========================================================///
@@ -187,7 +208,8 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
                                     ),
                                     IconButton(
                                       onPressed: () {
-                                        showEditBottomSheet(_taskListModel.data![index]);
+                                        //showEditBottomSheet(_taskListModel.data![index]);
+                                        showStatusUpDateBottomSheet(_taskListModel.data![index]);
                                       },
                                       icon: Icon(Icons.edit),
                                       color: Colors.greenAccent,
@@ -216,14 +238,13 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
     );
   }
 
-  ///---------------------------------------- BottomSheet for Edit Task Option --------------------------------------------------///
+  ///======================================== BottomSheet for Edit Task Option ==================================================///
   void showEditBottomSheet(TaskData task) {
     final TextEditingController _titleTEController = TextEditingController(text: task.title);
     final TextEditingController _descriptionTEController = TextEditingController(text: task.description);
     bool _updateTaskInProgress = false;
 
-    ///======================================== UpdateTask API Call ==== ========================================///
-
+    ///-------------------------------------- UpdateTask API Call ---------------------------------------------------------------///
     Future<void> updateTask() async{
       _updateTaskInProgress = true;
       if (mounted) {
@@ -256,6 +277,7 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
 
     }
 
+    ///---------------------------------------- BottomSheet as Edit Task Form ----------------------------------------------------///
     showModalBottomSheet(
         isScrollControlled: true,                                       ///*** should be true
         context: context, builder: (context){
@@ -317,6 +339,55 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
         ),
       );
     });
+  }
+
+  ///======================================== BottomSheet for Status UpDate Title or Task =======================================///
+  void showStatusUpDateBottomSheet(TaskData task) {
+    List<String> taskStatusList = ['New', 'Progress', 'Canceled', 'Completed'];
+    String _selectedTask = task.status!.toLowerCase();
+
+    showModalBottomSheet(
+      isScrollControlled: true,
+        context: context,
+        builder: (context){
+      return StatefulBuilder(
+        builder: (context, updateState) {
+          return SizedBox(
+            height: 400,
+            child: Column(
+              children: [
+                  const Padding(
+                    child: Text('Update Status'),
+                    padding: EdgeInsets.all(10),
+                  ),
+                  Expanded(
+                  child: ListView.builder(
+                    itemCount: taskStatusList.length,
+                      itemBuilder: (context, index){
+                            return ListTile(
+                              onTap: () {
+                                _selectedTask = taskStatusList[index];
+                                updateState(() {});
+                              },
+                              title: Text(taskStatusList[index].toUpperCase()),
+                              trailing: _selectedTask == taskStatusList[index]
+                                  ? Icon(Icons.check)
+                                  : null,
+                            );
+                          }),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: ElevatedButton(onPressed: (){
+                    updateTask(task.sId!, _selectedTask);
+                  }, child: Text('Update'),),
+                ),
+              ],
+            ),
+          );
+        }
+      );
+        });
   }
 
 }
