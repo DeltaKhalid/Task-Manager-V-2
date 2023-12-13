@@ -4,6 +4,7 @@ import 'package:task_managet/data/models/summary_count_model.dart';
 import 'package:task_managet/data/models/task_list_mode.dart';
 import 'package:task_managet/data/services/network_caller.dart';
 import 'package:task_managet/ui/screens/add_new_task_screen.dart';
+import 'package:task_managet/ui/widgets/screen_background.dart';
 import '../../data/utils/urls.dart';
 import '../widgets/summary_card.dart';
 import '../widgets/task_list_tile.dart';
@@ -128,7 +129,7 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
+      body: ScreenBackground(
         child: Column(
           children: [
             ///---------------------------------------- user profile banner --------------------------------------------------///

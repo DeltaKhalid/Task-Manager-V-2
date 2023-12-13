@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:task_managet/ui/widgets/screen_background.dart';
 
 import '../../data/models/network_response.dart';
 import '../../data/models/task_list_mode.dart';
@@ -56,7 +57,7 @@ class _CancelledTaskScreenState extends State<CancelledTaskScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: SafeArea(
+        body: ScreenBackground(
           child: Column(
             children: [
               const UserProfileBanner(),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:task_managet/data/models/completed_task_model.dart';
+import 'package:task_managet/ui/widgets/screen_background.dart';
 
 import '../../data/models/network_response.dart';
 import '../../data/models/task_list_mode.dart';
@@ -55,7 +56,7 @@ class _CompletedTaskScreenState extends State<CompletedTaskScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: SafeArea(
+        body: ScreenBackground(
           child: Column(
             children: [
               const UserProfileBanner(),
