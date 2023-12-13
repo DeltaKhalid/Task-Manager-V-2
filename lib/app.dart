@@ -4,7 +4,7 @@ import 'package:task_managet/ui/screens/splash_screen.dart';
 
 
 class TaskManagerApp extends StatefulWidget {
-  static GlobalKey<ScaffoldState> globalKey = GlobalKey<ScaffoldState>();
+  static GlobalKey<NavigatorState> globalKey = GlobalKey<NavigatorState>();
   const TaskManagerApp({super.key});
 
   @override
