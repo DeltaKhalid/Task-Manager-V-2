@@ -6,7 +6,7 @@ import '../../data/models/task_list_mode.dart';
 import '../../data/services/network_caller.dart';
 import '../../data/utils/urls.dart';
 import '../widgets/task_list_tile.dart';
-import '../widgets/user_profile_banner.dart';
+import '../widgets/user_profile_app_bar.dart';
 
 class CancelledTaskScreen extends StatefulWidget {
   const CancelledTaskScreen({super.key});
@@ -60,7 +60,7 @@ class _CancelledTaskScreenState extends State<CancelledTaskScreen> {
         body: ScreenBackground(
           child: Column(
             children: [
-              const UserProfileBanner(),
+              const UserProfileAppBar(),
               Expanded(
                 child: ListView.separated(
                   itemCount: _taskListModel.data?.length ?? 0,

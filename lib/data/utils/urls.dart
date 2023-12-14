@@ -12,7 +12,11 @@ class Urls {
   static String completedlTask = '$_baseurl/listTaskByStatus/Completed';
 
   static String deleteTask(String id) => '$_baseurl/deleteTask/$id';               /// ID will be change that's why
+
   static String updateTask(String id, String status) => '$_baseurl/updateTaskStatus/$id/$status';               /// id and status will be change that's why
+
+  static String updateProfile = '$_baseurl/profileUpdate';
+
 
 // static const String _baseurl = 'http://192.168.1.189/api/v1/account';
 // static String login = '$_baseurl/login';

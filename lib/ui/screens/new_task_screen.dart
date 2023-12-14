@@ -8,7 +8,7 @@ import 'package:task_managet/ui/widgets/screen_background.dart';
 import '../../data/utils/urls.dart';
 import '../widgets/summary_card.dart';
 import '../widgets/task_list_tile.dart';
-import '../widgets/user_profile_banner.dart';
+import '../widgets/user_profile_app_bar.dart';
 import 'package:http/http.dart';
 
 class NewTaskScreen extends StatefulWidget {
@@ -133,7 +133,7 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
         child: Column(
           children: [
             ///---------------------------------------- user profile banner --------------------------------------------------///
-            const UserProfileBanner(),
+            const UserProfileAppBar(),
 
             ///---------------------------------------- Task Summary Show ListView.builder -----------------------------------///
             _getCountSummaryInProgress

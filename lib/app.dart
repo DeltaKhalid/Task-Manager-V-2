@@ -15,7 +15,7 @@ class _TaskManagerAppState extends State<TaskManagerApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      key: TaskManagerApp.globalKey,
+      navigatorKey: TaskManagerApp.globalKey,
       debugShowCheckedModeBanner: false,
       title: 'Task Manager App Practice for CRUD',
       home: SplashScren(),
