@@ -3,7 +3,8 @@ import 'package:task_managet/ui/screens/auth/login_screen.dart';
 import 'package:task_managet/ui/widgets/screen_background.dart';
 
 class ResetPasswordScreen extends StatefulWidget {
-  const ResetPasswordScreen({super.key});
+  final String email, otp;
+  const ResetPasswordScreen({super.key, required this.email, required this.otp});
 
   @override
   State<ResetPasswordScreen> createState() => _ResetPasswordScreenState();

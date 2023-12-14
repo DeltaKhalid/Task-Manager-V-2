@@ -19,6 +19,8 @@ class Urls {
 
   static String sendOtpToEmail(String email) => '$_baseurl/RecoverVerifyEmail/$email';
 
+  static String otpVerify(String email, String otp) => '$_baseurl/RecoverVerifyEmail/$email/$otp';
+
 
 // static const String _baseurl = 'http://192.168.1.189/api/v1/account';
 // static String login = '$_baseurl/login';
