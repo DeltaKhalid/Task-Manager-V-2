@@ -17,6 +17,8 @@ class Urls {
 
   static String updateProfile = '$_baseurl/profileUpdate';
 
+  static String sendOtpToEmail(String email) => '$_baseurl/RecoverVerifyEmail/$email';
+
 
 // static const String _baseurl = 'http://192.168.1.189/api/v1/account';
 // static String login = '$_baseurl/login';
