@@ -7,6 +7,7 @@ import 'package:task_managet/ui/widgets/screen_background.dart';
 import 'package:task_managet/ui/widgets/user_profile_app_bar.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../data/models/login_model.dart';
 import '../../data/utils/urls.dart';
 
 class UpdateProfileScreen extends StatefulWidget {
@@ -27,7 +28,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   ImagePicker picker = ImagePicker();
 
   ///*** Add all controllers
-  final userData = AuthUtility.userInfo.data;                                   /// *** taking for Previous Data from saved data
+  UserData userData = AuthUtility.userInfo.data!;                                   /// *** taking for Previous Data from saved data
 
   //final TextEditingController _emailTEController = TextEditingController(text: AuthUtility.userInfo.data?.email ?? '');
 
@@ -72,6 +73,10 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
       setState(() {});
     }
     if (response.isSuccess) {
+      userData.firstName = _firstNameTEController.text.trim();
+      userData.lastName = _lastNameTEController.text.trim();
+      userData.mobile = _mobileTEController.text.trim();
+      AuthUtility.updateUserInfo(userData);
       _passwordTEController.clear();
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Profile Updated'),),);
